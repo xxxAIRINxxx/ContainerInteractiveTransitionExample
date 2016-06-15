@@ -6,7 +6,7 @@
 
 ![capture](capture.gif)
 
-Examples of interactive transition of ContainerViewController.(UIPercentDrivenInteractiveTransition)
+Examples of interactive transition of ContainerViewController. (UIPercentDrivenInteractiveTransition)
 
 ## Requirements
 
