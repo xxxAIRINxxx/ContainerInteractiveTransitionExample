@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="sao-bE-nHy">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="GQw-da-VNL">
+            <objects>
+                <viewController id="sao-bE-nHy" customClass="ViewController" customModule="ContainerInteractiveTransitionExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="siw-OG-cik"/>
+                        <viewControllerLayoutGuide type="bottom" id="I3R-tf-fNu"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ceP-PT-35r">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T8V-tE-rWE">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <connections>
+                                    <segue destination="ZQd-U4-bCW" kind="embed" id="Fxf-Ly-bqP"/>
+                                </connections>
+                            </containerView>
+                            <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XAt-YI-ofJ">
+                                <rect key="frame" x="0.0" y="618" width="375" height="49"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="49" id="5Pq-dk-pc6"/>
+                                </constraints>
+                                <items>
+                                    <tabBarItem systemItem="favorites" id="7g1-FD-Pbz"/>
+                                    <tabBarItem systemItem="more" id="1dj-q4-zgQ"/>
+                                </items>
+                                <connections>
+                                    <outlet property="delegate" destination="sao-bE-nHy" id="CpO-Wx-Jry"/>
+                                </connections>
+                            </tabBar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="I3R-tf-fNu" firstAttribute="top" secondItem="T8V-tE-rWE" secondAttribute="bottom" id="6eb-f1-SzT"/>
+                            <constraint firstAttribute="trailing" secondItem="T8V-tE-rWE" secondAttribute="trailing" id="HNT-3i-W9m"/>
+                            <constraint firstAttribute="trailing" secondItem="XAt-YI-ofJ" secondAttribute="trailing" id="MNO-D0-My4"/>
+                            <constraint firstItem="T8V-tE-rWE" firstAttribute="top" secondItem="ceP-PT-35r" secondAttribute="top" id="QHc-eY-YMh"/>
+                            <constraint firstItem="XAt-YI-ofJ" firstAttribute="leading" secondItem="ceP-PT-35r" secondAttribute="leading" id="Rsz-Kq-jMN"/>
+                            <constraint firstItem="I3R-tf-fNu" firstAttribute="top" secondItem="XAt-YI-ofJ" secondAttribute="bottom" id="gx8-Ut-Moa"/>
+                            <constraint firstItem="T8V-tE-rWE" firstAttribute="leading" secondItem="ceP-PT-35r" secondAttribute="leading" id="vry-m8-7vX"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="containerView" destination="T8V-tE-rWE" id="uZQ-Wd-Mk7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zHp-Yv-d3G" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="846.5" y="-217.5"/>
+        </scene>
+        <!--First View Controller-->
+        <scene sceneID="xjX-Oj-xqR">
+            <objects>
+                <viewController storyboardIdentifier="FirstViewController" id="ZQd-U4-bCW" customClass="FirstViewController" customModule="ContainerInteractiveTransitionExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="rRF-Yr-q70"/>
+                        <viewControllerLayoutGuide type="bottom" id="5NB-PQ-uZB"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kMM-eW-VAi">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G8G-FY-LuQ">
+                                <rect key="frame" x="166" y="319" width="43" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="P3P-Go-3ZR"/>
+                                    <constraint firstAttribute="width" constant="43" id="ndp-lf-zGW"/>
+                                </constraints>
+                                <state key="normal" title="Push"/>
+                                <connections>
+                                    <action selector="push" destination="ZQd-U4-bCW" eventType="touchUpInside" id="xLH-N8-ZKd"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="G8G-FY-LuQ" firstAttribute="centerX" secondItem="kMM-eW-VAi" secondAttribute="centerX" id="4Eg-TL-jkE"/>
+                            <constraint firstItem="G8G-FY-LuQ" firstAttribute="centerY" secondItem="kMM-eW-VAi" secondAttribute="centerY" id="OIR-4f-12n"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lxf-da-KBX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1299.5" y="-217.5"/>
+        </scene>
+        <!--Contents View Controller-->
+        <scene sceneID="Tsm-yA-n47">
+            <objects>
+                <viewController storyboardIdentifier="ContentsViewController" automaticallyAdjustsScrollViewInsets="NO" id="DkC-OY-i8Q" customClass="ContentsViewController" customModule="ContainerInteractiveTransitionExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Yb7-aZ-tPu"/>
+                        <viewControllerLayoutGuide type="bottom" id="rKE-lq-jcb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="lcN-Jj-UVr">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6Ly-Eu-nUi">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <sections/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="6Ly-Eu-nUi" secondAttribute="trailing" id="LJu-7O-3ZY"/>
+                            <constraint firstItem="rKE-lq-jcb" firstAttribute="top" secondItem="6Ly-Eu-nUi" secondAttribute="bottom" id="LeY-BX-6cx"/>
+                            <constraint firstItem="6Ly-Eu-nUi" firstAttribute="top" secondItem="lcN-Jj-UVr" secondAttribute="top" id="ekc-hm-0qx"/>
+                            <constraint firstItem="6Ly-Eu-nUi" firstAttribute="leading" secondItem="lcN-Jj-UVr" secondAttribute="leading" id="ww8-hG-l9x"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ysh-Zw-yo0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1761.5" y="-217.5"/>
+        </scene>
+    </scenes>
+</document>
