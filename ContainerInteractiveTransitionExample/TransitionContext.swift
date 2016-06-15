@@ -17,6 +17,7 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     
     var duration: NSTimeInterval = 0.3
     var nowInteractive: Bool = false
+    var completion: (Void -> Void)?
     
     private let blackScreenView: UIView = UIView(frame: CGRect.zero)
     private let _containerView: UIView
@@ -142,7 +143,9 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     func finishInteractiveTransition() {
         self.animateTransition(self.duration * Double.init(self.percentComplete), animations: {
             self.updateInteractiveTransition(1.0)
-        })
+        }) { finished in
+            self.completeTransition(finished)
+        }
     }
     
     func cancelInteractiveTransition() {
@@ -155,6 +158,11 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         if didComplete {
             self.nowInteractive = false
             self.blackScreenView.removeFromSuperview()
+            
+            if !self.isPresenting {
+                self.fromVC.view.removeFromSuperview()
+            }
+            self.completion?()
         }
     }
     

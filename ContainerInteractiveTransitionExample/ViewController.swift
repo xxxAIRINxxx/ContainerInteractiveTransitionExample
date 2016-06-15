@@ -27,8 +27,7 @@ class ViewController: UIViewController  {
         let n = UINavigationController(rootViewController: v)
         
         let context = TransitionContext(containerView: self.containerView, fromVC: fromVC, toVC: n, isPresenting: true)
-        
-        self.animator = Animator() { [weak self] in
+        context.completion = { [weak self] in
             self?.animator = nil
         }
         
@@ -36,6 +35,7 @@ class ViewController: UIViewController  {
         self.addChildViewController(n)
         n.didMoveToParentViewController(self)
         
+        self.animator = Animator()
         self.setupInteractiveAnimator()
         self.animator.animateTransition(context)
     }
@@ -46,12 +46,13 @@ class ViewController: UIViewController  {
         guard let toVC = self.getToVC(fromVC) else { return }
         
         let context = TransitionContext(containerView: self.containerView, fromVC: fromVC, toVC: toVC, isPresenting: false)
-        self.animator = Animator() { [weak self] in
+        context.completion = { [weak self] in
             self?.animator = nil
             fromVC.removeFromParentViewController()
             toVC.didMoveToParentViewController(self)
             self?.setupInteractiveAnimator()
         }
+        self.animator = Animator()
         self.animator.animateTransition(context)
     }
     
@@ -75,12 +76,14 @@ class ViewController: UIViewController  {
         guard let toVC = self.getToVC(fromVC) else { return }
         
         let context = TransitionContext(containerView: self.containerView, fromVC: fromVC, toVC: toVC, isPresenting: false)
-        self.interactiveAnimator = InteractiveAnimator(context) { [weak self] in
+        context.completion = { [weak self] in
             self?.interactiveAnimator = nil
             fromVC.removeFromParentViewController()
             toVC.didMoveToParentViewController(self)
             self?.setupInteractiveAnimator()
         }
+        
+        self.interactiveAnimator = InteractiveAnimator(context)
         self.interactiveAnimator.registerDismissalPanGesture(fromVC)
     }
 }

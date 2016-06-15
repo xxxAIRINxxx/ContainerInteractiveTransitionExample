@@ -11,7 +11,6 @@ import UIKit
 
 final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
     
-    private let completion: (Void -> Void)?
     private let transitionContext: TransitionContext
     
     // dismissal pan gesture support
@@ -25,9 +24,9 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
         print("deinit InteractiveAnimator")
     }
     
-    init(_ transitionContext: TransitionContext, _ completion: (Void -> Void)? = nil) {
+    init(_ transitionContext: TransitionContext) {
         self.transitionContext = transitionContext
-        self.completion = completion
+        
         super.init()
     }
     
@@ -94,7 +93,6 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
         super.cancelInteractiveTransition()
         
         self.transitionContext.cancelInteractiveTransition()
-        self.transitionContext.completeTransition(false)
     }
     
     override func finishInteractiveTransition() {
@@ -102,7 +100,5 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
         super.finishInteractiveTransition()
         
         self.transitionContext.finishInteractiveTransition()
-        self.transitionContext.completeTransition(true)
-        self.completion?()
     }
 }

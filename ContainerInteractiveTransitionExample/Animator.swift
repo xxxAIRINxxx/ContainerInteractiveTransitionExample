@@ -11,15 +11,8 @@ import UIKit
 
 final class Animator: NSObject, UIViewControllerAnimatedTransitioning {
     
-    private let completion: (Void -> Void)?
-    
     deinit {
         print("deinit Animator")
-    }
-    
-    init(completion: (Void -> Void)? = nil) {
-        self.completion = completion
-        super.init()
     }
     
     @objc func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
@@ -35,7 +28,6 @@ final class Animator: NSObject, UIViewControllerAnimatedTransitioning {
             c.updateInteractiveTransition(1.0)
         }) { finished in
             c.completeTransition(finished)
-            self.completion?()
         }
     }
 }
