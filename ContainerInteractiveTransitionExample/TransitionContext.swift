@@ -181,26 +181,22 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     }
     
     func initialFrameForViewController(vc: UIViewController) -> CGRect {
+        var f = vc.view.frame
         if vc === self.fromVC {
-            var f = vc.view.frame
-            f.origin.x = self.isPresenting ? 0.0 : self.fromVCScrollX
-            return f
+            f.origin.x = 0.0
         } else {
-            var f = vc.view.frame
             f.origin.x = self.isPresenting ? f.width : self.fromVCScrollX
-            return f
         }
+        return f
     }
     
     func finalFrameForViewController(vc: UIViewController) -> CGRect {
+        var f = vc.view.frame
         if vc === self.fromVC {
-            var f = vc.view.frame
             f.origin.x = self.isPresenting ? self.fromVCScrollX : f.width
-            return f
         } else {
-            var f = vc.view.frame
-            f.origin.x = self.isPresenting ? 0.0 : 0.0
-            return f
+            f.origin.x = 0.0
         }
+        return f
     }
 }
