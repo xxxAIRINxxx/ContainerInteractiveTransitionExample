@@ -20,11 +20,11 @@ class ContentsViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Pop",
                                                                  style: .Plain,
                                                                  target: self,
-                                                                 action: #selector(ContentsViewController.pop))
+                                                                 action: #selector(self.pop))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Push",
                                                                 style: .Plain,
                                                                 target: self,
-                                                                action: #selector(ContentsViewController.push))
+                                                                action: #selector(self.push))
     }
     
     func pop() {

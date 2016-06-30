@@ -33,7 +33,7 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
     func registerDismissalPanGesture(targetVC: UIViewController) {
         self.unregisterDismissalPanGesture()
         
-        self.gesture = UIPanGestureRecognizer(target: self, action: #selector(InteractiveAnimator.handlePan(_:)))
+        self.gesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
         self.gesture!.maximumNumberOfTouches = 1
         targetVC.view.addGestureRecognizer(self.gesture!)
     }
