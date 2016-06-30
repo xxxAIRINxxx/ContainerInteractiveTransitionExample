@@ -19,6 +19,10 @@ class ViewController: UIViewController  {
         super.viewDidLoad()
     }
     
+    override func childViewControllerForStatusBarStyle() -> UIViewController? {
+        return self.childViewControllers.last
+    }
+    
     func push() {
         guard let fromVC = self.childViewControllers.last else { return }
         
@@ -29,6 +33,7 @@ class ViewController: UIViewController  {
         let context = TransitionContext(containerView: self.containerView, fromVC: fromVC, toVC: n, isPresenting: true)
         context.completion = { [weak self] in
             self?.animator = nil
+            self?.setNeedsStatusBarAppearanceUpdate()
         }
         
         fromVC.willMoveToParentViewController(nil)
@@ -51,6 +56,7 @@ class ViewController: UIViewController  {
             fromVC.removeFromParentViewController()
             toVC.didMoveToParentViewController(self)
             self?.setupInteractiveAnimator()
+            self?.setNeedsStatusBarAppearanceUpdate()
         }
         self.animator = Animator()
         self.animator.animateTransition(context)
@@ -81,6 +87,7 @@ class ViewController: UIViewController  {
             fromVC.removeFromParentViewController()
             toVC.didMoveToParentViewController(self)
             self?.setupInteractiveAnimator()
+            self?.setNeedsStatusBarAppearanceUpdate()
         }
         
         self.interactiveAnimator = InteractiveAnimator(context)
