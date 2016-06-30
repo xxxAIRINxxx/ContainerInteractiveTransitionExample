@@ -158,10 +158,7 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         if didComplete {
             self.nowInteractive = false
             self.blackScreenView.removeFromSuperview()
-            
-            if !self.isPresenting {
-                self.fromVC.view.removeFromSuperview()
-            }
+            self.fromVC.view.removeFromSuperview()
             self.completion?()
         }
     }
