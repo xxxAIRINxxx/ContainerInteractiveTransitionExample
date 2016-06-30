@@ -141,7 +141,8 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     }
     
     func finishInteractiveTransition() {
-        self.animateTransition(self.duration * Double.init(self.percentComplete), animations: {
+        let d = self.duration - (self.duration * Double.init(self.percentComplete))
+        self.animateTransition(d, animations: {
             self.updateInteractiveTransition(1.0)
         }) { finished in
             self.completeTransition(finished)
@@ -149,7 +150,8 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     }
     
     func cancelInteractiveTransition() {
-        self.animateTransition(self.duration * Double.init(1.0 - self.percentComplete), animations: {
+        let d = self.duration * Double.init(1.0 - self.percentComplete)
+        self.animateTransition(d, animations: {
             self.updateInteractiveTransition(0.0)
         })
     }
