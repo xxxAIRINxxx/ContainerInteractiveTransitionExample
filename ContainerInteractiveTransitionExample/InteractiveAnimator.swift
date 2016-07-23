@@ -40,9 +40,7 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
     
     func unregisterDismissalPanGesture() {
         guard let g = self.gesture else { return }
-        if let _view = g.view {
-            _view.removeGestureRecognizer(g)
-        }
+        g.view?.removeGestureRecognizer(g)
         self.gesture = nil
     }
     
@@ -78,6 +76,10 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
     
     override func startInteractiveTransition(transitionContext: UIViewControllerContextTransitioning) {
         print("startInteractiveTransition")
+        
+        self.transitionContext.fromVC.beginAppearanceTransition(false, animated: false)
+        self.transitionContext.toVC.beginAppearanceTransition(true, animated: false)
+        
         self.transitionContext.nowInteractive = true
         self.transitionContext.willAnimationTransition()
     }
