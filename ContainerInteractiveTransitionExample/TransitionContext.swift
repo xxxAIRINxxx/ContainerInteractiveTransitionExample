@@ -96,11 +96,16 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     }
     
     func animateTransition(duration: NSTimeInterval, animations: (Void -> Void), completion: ((Bool) -> Void)? = nil) {
+        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+        
         UIView.animateWithDuration(duration,
                                    delay: 0.0,
                                    options: .CurveEaseOut,
                                    animations: animations,
-                                   completion: completion)
+                                   completion: { finished in
+                                    UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                                    completion?(finished)
+        })
         
     }
     

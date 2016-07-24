@@ -24,12 +24,9 @@ final class Animator: NSObject, UIViewControllerAnimatedTransitioning {
         
         c.willAnimationTransition()
         
-        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-        
         c.animateTransition(self.transitionDuration(c), animations: {
             c.updateInteractiveTransition(1.0)
         }) { finished in
-            UIApplication.sharedApplication().endIgnoringInteractionEvents()
             c.completeTransition(finished)
         }
     }
