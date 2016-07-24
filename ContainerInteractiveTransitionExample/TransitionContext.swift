@@ -96,17 +96,11 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     }
     
     func animateTransition(duration: NSTimeInterval, animations: (Void -> Void), completion: ((Bool) -> Void)? = nil) {
-        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-        
         UIView.animateWithDuration(duration,
                                    delay: 0.0,
                                    options: .CurveEaseOut,
                                    animations: animations,
-                                   completion: { finished in
-                                    UIApplication.sharedApplication().endIgnoringInteractionEvents()
-                                    completion?(finished)
-        })
-        
+                                   completion: completion)
     }
     
     func updateInteractiveTransition(percentComplete: CGFloat) {
@@ -149,9 +143,11 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         let d = self.duration - (self.duration * Double.init(self.percentComplete))
         self.nowInteractive = false
         
+        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
         self.animateTransition(d, animations: {
             self.updateInteractiveTransition(1.0)
         }) { finished in
+            UIApplication.sharedApplication().endIgnoringInteractionEvents()
             self.completeTransition(true)
         }
     }
@@ -160,9 +156,11 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         let d = self.duration * Double.init(1.0 - self.percentComplete)
         self.nowInteractive = false
         
+        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
         self.animateTransition(d, animations: {
             self.updateInteractiveTransition(0.0)
         }) { finished in
+            UIApplication.sharedApplication().endIgnoringInteractionEvents()
             self.completeTransition(false)
         }
     }
