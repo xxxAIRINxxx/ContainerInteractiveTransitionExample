@@ -8,18 +8,18 @@
 
 import UIKit
 
-class FirstViewController: UIViewController {
+final class FirstViewController: UIViewController {
     
     deinit {
         print("deinit FirstViewController")
     }
     
     @IBAction func push() {
-        if let p = self.parentViewController as? ViewController {
+        if let p = self.parent as? ViewController {
             p.push()
             return
         }
-        if let p = self.navigationController?.parentViewController as? ViewController {
+        if let p = self.navigationController?.parent as? ViewController {
             p.push()
         }
     }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContentsViewController: UIViewController {
+final class ContentsViewController: UIViewController {
     
     deinit {
         print("deinit ContentsViewController")
@@ -18,23 +18,23 @@ class ContentsViewController: UIViewController {
         super.viewDidLoad()
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Pop",
-                                                                 style: .Plain,
+                                                                 style: .plain,
                                                                  target: self,
                                                                  action: #selector(self.pop))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Push",
-                                                                style: .Plain,
+                                                                style: .plain,
                                                                 target: self,
                                                                 action: #selector(self.push))
     }
     
     func pop() {
-        if let p = self.navigationController?.parentViewController as? ViewController {
+        if let p = self.navigationController?.parent as? ViewController {
             p.pop()
         }
     }
     
     func push() {
-        if let p = self.navigationController?.parentViewController as? ViewController {
+        if let p = self.navigationController?.parent as? ViewController {
             p.push()
         }
     }

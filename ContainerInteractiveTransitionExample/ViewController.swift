@@ -8,12 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController  {
+final class ViewController: UIViewController  {
     
     @IBOutlet private weak var containerView: UIView!
     
-    private var animator: Animator!
-    private var interactiveAnimator: InteractiveAnimator!
+    private var animator: Animator?
+    private var interactiveAnimator: InteractiveAnimator?
   
     private var isTransitioning: Bool = false
     
@@ -21,7 +21,7 @@ class ViewController: UIViewController  {
         super.viewDidLoad()
     }
     
-    override func childViewControllerForStatusBarStyle() -> UIViewController? {
+    override var childViewControllerForStatusBarStyle: UIViewController? {
         return self.childViewControllers.last
     }
     
@@ -29,7 +29,7 @@ class ViewController: UIViewController  {
         guard let fromVC = self.childViewControllers.last else { return }
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let v = storyboard.instantiateViewControllerWithIdentifier("ContentsViewController") as! ContentsViewController
+        let v = storyboard.instantiateViewController(withIdentifier: "ContentsViewController") as! ContentsViewController
         let n = UINavigationController(rootViewController: v)
         
         let context = TransitionContext(containerView: self.containerView, fromVC: fromVC, toVC: n, isPresenting: true)
@@ -41,23 +41,23 @@ class ViewController: UIViewController  {
             self?.setNeedsStatusBarAppearanceUpdate()
         }
         
-        fromVC.willMoveToParentViewController(nil)
+        fromVC.willMove(toParentViewController: nil)
         self.addChildViewController(n)
-        n.didMoveToParentViewController(self)
+        n.didMove(toParentViewController: self)
         
         fromVC.beginAppearanceTransition(false, animated: false)
         n.beginAppearanceTransition(true, animated: false)
         
         self.animator = Animator()
         self.setupInteractiveAnimator()
-        self.animator.animateTransition(context)
+        self.animator?.animateTransition(using: context)
     }
     
     func pop() {
         if self.isTransitioning { return }
         if self.childViewControllers.count <= 1 { return }
         guard let fromVC = self.childViewControllers.last else { return }
-        guard let toVC = self.getToVC(fromVC) else { return }
+        guard let toVC = self.getToVC(fromVC: fromVC) else { return }
         
         self.isTransitioning = true
         
@@ -69,7 +69,7 @@ class ViewController: UIViewController  {
             fromVC.endAppearanceTransition()
             toVC.endAppearanceTransition()
             fromVC.removeFromParentViewController()
-            toVC.didMoveToParentViewController(self)
+            toVC.didMove(toParentViewController: self)
             
             self?.setupInteractiveAnimator()
             self?.setNeedsStatusBarAppearanceUpdate()
@@ -79,16 +79,16 @@ class ViewController: UIViewController  {
         toVC.beginAppearanceTransition(true, animated: false)
         
         self.animator = Animator()
-        self.animator.animateTransition(context)
+        self.animator?.animateTransition(using: context)
     }
     
     private func getToVC(fromVC: UIViewController) -> UIViewController? {
         if self.childViewControllers.count <= 1 { return nil }
         
         var index = 0
-        self.childViewControllers.enumerate().forEach() {
+        self.childViewControllers.enumerated().forEach() {
             if $0.element === fromVC {
-                index = $0.index
+                index = $0.offset
             }
         }
         
@@ -99,7 +99,7 @@ class ViewController: UIViewController  {
     private func setupInteractiveAnimator() {
         if self.childViewControllers.count <= 1 { return }
         guard let fromVC = self.childViewControllers.last else { return }
-        guard let toVC = self.getToVC(fromVC) else { return }
+        guard let toVC = self.getToVC(fromVC: fromVC) else { return }
         
         let context = TransitionContext(containerView: self.containerView, fromVC: fromVC, toVC: toVC, isPresenting: false)
         context.completion = { [weak self] didComplete in
@@ -109,7 +109,7 @@ class ViewController: UIViewController  {
                 fromVC.endAppearanceTransition()
                 toVC.endAppearanceTransition()
                 
-                fromVC.willMoveToParentViewController(nil)
+                fromVC.willMove(toParentViewController: nil)
                 fromVC.removeFromParentViewController()
                 
                 self?.setNeedsStatusBarAppearanceUpdate()
@@ -119,13 +119,13 @@ class ViewController: UIViewController  {
         }
         
         self.interactiveAnimator = InteractiveAnimator(context)
-        self.interactiveAnimator.registerDismissalPanGesture(fromVC)
+        self.interactiveAnimator?.registerDismissalPanGesture(targetVC: fromVC)
     }
 }
 
 extension UIColor {
     
-    static func rgba(red: CGFloat, _ green: CGFloat, _ blue: CGFloat, _ alpha: CGFloat) -> UIColor {
+    static func rgba(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat, _ alpha: CGFloat) -> UIColor {
         return UIColor(
             red: (red < 0 ? 0 : red) / 255,
             green: (green < 0 ? 0 : green) / 255,

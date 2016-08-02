@@ -33,7 +33,7 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
     func registerDismissalPanGesture(targetVC: UIViewController) {
         self.unregisterDismissalPanGesture()
         
-        self.gesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
+        self.gesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
         self.gesture!.maximumNumberOfTouches = 1
         targetVC.view.addGestureRecognizer(self.gesture!)
     }
@@ -44,37 +44,37 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
         self.gesture = nil
     }
     
-    @objc func handlePan(recognizer: UIPanGestureRecognizer) {
+    @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
         let window : UIWindow? = self.transitionContext.fromVC.view.window
         
-        var location = recognizer.locationInView(window)
-        location = CGPointApplyAffineTransform(location, CGAffineTransformInvert(recognizer.view!.transform))
-        var velocity = recognizer .velocityInView(window)
-        velocity = CGPointApplyAffineTransform(velocity, CGAffineTransformInvert(recognizer.view!.transform))
+        var location = recognizer.location(in: window)
+        location = location.applying(recognizer.view!.transform.inverted())
+        var velocity = recognizer .velocity(in: window)
+        velocity = velocity.applying(recognizer.view!.transform.inverted())
         
         let bounds = self.transitionContext.fromVC.view.bounds
         let animationRatio: CGFloat = (location.x - self.panLocationStart) / bounds.width
-        if recognizer.state == .Began {
+        if recognizer.state == .began {
             self.panLocationStart = location.x
-        } else if recognizer.state == .Changed {
+        } else if recognizer.state == .changed {
             if (location.x - self.panLocationStart) > self.panStartThreshold && !self.transitionContext.nowInteractive {
                 self.startInteractiveTransition(self.transitionContext)
             }
-            self.updateInteractiveTransition(animationRatio)
-        } else if recognizer.state == .Ended {
+            self.update(animationRatio)
+        } else if recognizer.state == .ended {
             let velocityForSelectedDirection: CGFloat = velocity.x
             
             if velocityForSelectedDirection > self.panCompletionThreshold {
-                self.finishInteractiveTransition()
+                self.finish()
             } else {
-                self.cancelInteractiveTransition()
+                self.cancel()
             }
         } else {
-            self.cancelInteractiveTransition()
+            self.cancel()
         }
     }
     
-    override func startInteractiveTransition(transitionContext: UIViewControllerContextTransitioning) {
+    override func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
         print("startInteractiveTransition")
         
         self.transitionContext.fromVC.beginAppearanceTransition(false, animated: false)
@@ -84,22 +84,22 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
         self.transitionContext.willAnimationTransition()
     }
     
-    override func updateInteractiveTransition(percentComplete: CGFloat) {
-        super.updateInteractiveTransition(percentComplete)
+    override func update(_ percentComplete: CGFloat) {
+        super.update(percentComplete)
         
         self.transitionContext.updateInteractiveTransition(percentComplete)
     }
     
-    override func cancelInteractiveTransition() {
+    override func cancel() {
         print("cancelInteractiveTransition")
-        super.cancelInteractiveTransition()
+        super.cancel()
         
         self.transitionContext.cancelInteractiveTransition()
     }
     
-    override func finishInteractiveTransition() {
+    override func finish() {
         print("finishInteractiveTransition")
-        super.finishInteractiveTransition()
+        super.finish()
         
         self.transitionContext.finishInteractiveTransition()
     }

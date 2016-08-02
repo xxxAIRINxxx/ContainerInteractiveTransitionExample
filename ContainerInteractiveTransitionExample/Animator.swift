@@ -15,16 +15,16 @@ final class Animator: NSObject, UIViewControllerAnimatedTransitioning {
         print("deinit Animator")
     }
     
-    @objc func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    @objc func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
     
-    @objc func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+    @objc func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let c = transitionContext as? TransitionContext else { return }
         
         c.willAnimationTransition()
         
-        c.animateTransition(self.transitionDuration(c), animations: {
+        c.animateTransition(duration: self.transitionDuration(using: c), animations: {
             c.updateInteractiveTransition(1.0)
         }) { finished in
             c.completeTransition(finished)

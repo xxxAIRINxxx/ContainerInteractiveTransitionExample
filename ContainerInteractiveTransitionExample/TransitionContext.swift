@@ -15,15 +15,39 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     private(set) weak var fromVC: UIViewController!
     private(set) weak var toVC: UIViewController!
     
-    var duration: NSTimeInterval = 0.3
+    var duration: TimeInterval = 0.3
     var nowInteractive: Bool = false
-    var completion: (Bool -> Void)?
+    var completion: ((Bool) -> Void)?
     
     private let blackScreenView: UIView = UIView(frame: CGRect.zero)
     private let _containerView: UIView
     private let isPresenting: Bool
     private let fromVCScrollX: CGFloat = -50.0
     private var percentComplete: CGFloat = 0.0
+    
+    var targetTransform: CGAffineTransform {
+        return self._containerView.transform
+    }
+    
+    var containerView: UIView {
+        return self._containerView
+    }
+    
+    var isAnimated: Bool {
+        return true
+    }
+    
+    var isInteractive: Bool {
+        return self.nowInteractive
+    }
+    
+    var transitionWasCancelled: Bool {
+        return false
+    }
+    
+    var presentationStyle: UIModalPresentationStyle {
+        return .custom
+    }
     
     deinit {
         print("deinit TransitionContext")
@@ -40,75 +64,55 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         super.init()
     }
     
-    func containerView() -> UIView? {
-        return self._containerView
-    }
-    
-    func isAnimated() -> Bool {
-        return true
-    }
-    
-    func isInteractive() -> Bool {
-        return self.nowInteractive
-    }
-    
-    func transitionWasCancelled() -> Bool {
-        return false
-    }
-    
-    func presentationStyle() -> UIModalPresentationStyle {
-        return .Custom
-    }
-    
     func willAnimationTransition() {
-        self.fromVC.view.frame = self.initialFrameForViewController(self.fromVC)
-        self.toVC.view.frame = self.initialFrameForViewController(self.toVC)
+        self.fromVC.view.frame = self.initialFrame(for: self.fromVC)
+        self.toVC.view.frame = self.initialFrame(for: self.toVC)
         
         if self.isPresenting {
-            self.containerView()?.subviews.forEach() { $0.removeFromSuperview() }
+            self.containerView.subviews.forEach() { $0.removeFromSuperview() }
             
-            self.toVC.view.layer.shadowColor = UIColor.rgba(40, 40, 40, 1.0).CGColor
+            self.toVC.view.layer.shadowColor = UIColor.rgba(40, 40, 40, 1.0).cgColor
             self.toVC.view.layer.shadowOpacity = 0.8
             self.toVC.view.layer.shadowRadius = 3.0
             
             self.blackScreenView.frame = self.fromVC.view.bounds
             self.blackScreenView.alpha = 0.0
             
-            self.containerView()?.addSubview(self.fromVC.view)
-            self.containerView()?.addSubview(self.blackScreenView)
-            self.containerView()?.addSubview(self.toVC.view)
+            self.containerView.addSubview(self.fromVC.view)
+            self.containerView.addSubview(self.blackScreenView)
+            self.containerView.addSubview(self.toVC.view)
             self.fromVC.view.layoutIfNeeded()
             self.toVC.view.layoutIfNeeded()
         } else {
-            self.fromVC.view.layer.shadowColor = UIColor.rgba(40, 40, 40, 1.0).CGColor
+            self.fromVC.view.layer.shadowColor = UIColor.rgba(40, 40, 40, 1.0).cgColor
             self.fromVC.view.layer.shadowOpacity = 0.8
             self.fromVC.view.layer.shadowRadius = 3.0
             
             self.blackScreenView.frame = self.toVC.view.bounds
             self.blackScreenView.alpha = 1.0
             
-            self.containerView()?.addSubview(self.toVC.view)
-            self.containerView()?.addSubview(self.blackScreenView)
-            self.containerView()?.addSubview(self.fromVC.view)
+            self.containerView.addSubview(self.toVC.view)
+            self.containerView.addSubview(self.blackScreenView)
+            self.containerView.addSubview(self.fromVC.view)
             self.fromVC.view.layoutIfNeeded()
             self.toVC.view.layoutIfNeeded()
         }
     }
     
-    func animateTransition(duration: NSTimeInterval, animations: (Void -> Void), completion: ((Bool) -> Void)? = nil) {
-        UIView.animateWithDuration(duration,
-                                   delay: 0.0,
-                                   options: .CurveEaseOut,
-                                   animations: animations,
-                                   completion: completion)
+    func animateTransition(duration: TimeInterval, animations: ((Void) -> Void), completion: ((Bool) -> Void)? = nil) {
+        UIView.animate(withDuration: duration,
+                       delay: 0.0,
+                       options: .curveEaseOut,
+                       animations: animations,
+                       completion: completion)
     }
     
-    func updateInteractiveTransition(percentComplete: CGFloat) {
+    func updateInteractiveTransition(_ percentComplete: CGFloat) {
         self.percentComplete = percentComplete
         
         if self.isPresenting {
-            var fromRect = self.finalFrameForViewController(self.fromVC)
-            var toRect = self.finalFrameForViewController(self.toVC)
+            var fromRect = self.finalFrame(for: self.fromVC)
+            var toRect = self.finalFrame(for: self.toVC)
             
             fromRect.origin.x = fromRect.origin.x * percentComplete
             toRect.origin.x = toRect.origin.x * percentComplete
@@ -119,9 +123,9 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         } else {
             print("percentComplete \(percentComplete)")
             
-            var fromRect = self.finalFrameForViewController(self.fromVC)
-            let toInitRect = self.initialFrameForViewController(self.toVC)
-            var toRect = self.finalFrameForViewController(self.toVC)
+            var fromRect = self.finalFrame(for: self.fromVC)
+            let toInitRect = self.initialFrame(for: self.toVC)
+            var toRect = self.finalFrame(for: self.toVC)
             
             fromRect.origin.x = fromRect.origin.x * percentComplete
             toRect.origin.x = toInitRect.origin.x * (1.0 - percentComplete)
@@ -129,7 +133,7 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
             if fromRect.origin.x < 0.0 {
                 fromRect.origin.x = 0.0
             }
-            if isnan(fromRect.origin.x) || isinf(fromRect.origin.x) {
+            if fromRect.origin.x.isNaN || fromRect.origin.x.isInfinite {
                 fromRect.origin.x = 0.0
             }
             
@@ -143,11 +147,11 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         let d = self.duration - (self.duration * Double.init(self.percentComplete))
         self.nowInteractive = false
         
-        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-        self.animateTransition(d, animations: {
+        UIApplication.shared.beginIgnoringInteractionEvents()
+        self.animateTransition(duration: d, animations: {
             self.updateInteractiveTransition(1.0)
         }) { finished in
-            UIApplication.sharedApplication().endIgnoringInteractionEvents()
+            UIApplication.shared.endIgnoringInteractionEvents()
             self.completeTransition(true)
         }
     }
@@ -156,16 +160,18 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         let d = self.duration * Double.init(1.0 - self.percentComplete)
         self.nowInteractive = false
         
-        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-        self.animateTransition(d, animations: {
+        UIApplication.shared.beginIgnoringInteractionEvents()
+        self.animateTransition(duration: d, animations: {
             self.updateInteractiveTransition(0.0)
         }) { finished in
-            UIApplication.sharedApplication().endIgnoringInteractionEvents()
+            UIApplication.shared.endIgnoringInteractionEvents()
             self.completeTransition(false)
         }
     }
     
-    func completeTransition(didComplete: Bool) {
+    func pauseInteractiveTransition() {}
+    
+    func completeTransition(_ didComplete: Bool) {
         self.nowInteractive = false
         
         if didComplete {
@@ -175,21 +181,17 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         self.completion?(didComplete)
     }
     
-    func viewControllerForKey(key: String) -> UIViewController? {
+    func viewController(forKey key: String) -> UIViewController? {
         if key == UITransitionContextFromViewControllerKey { return self.fromVC }
         if key == UITransitionContextToViewControllerKey { return self.toVC }
         return nil
     }
     
-    func viewForKey(key: String) -> UIView? {
-        return self.viewControllerForKey(key)?.view
+    func view(forKey key: String) -> UIView? {
+        return self.viewController(forKey: key)?.view
     }
     
-    func targetTransform() -> CGAffineTransform {
-        return self._containerView.transform
-    }
-    
-    func initialFrameForViewController(vc: UIViewController) -> CGRect {
+    func initialFrame(for vc: UIViewController) -> CGRect {
         var f = vc.view.frame
         if vc === self.fromVC {
             f.origin.x = 0.0
@@ -199,7 +201,7 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         return f
     }
     
-    func finalFrameForViewController(vc: UIViewController) -> CGRect {
+    func finalFrame(for vc: UIViewController) -> CGRect {
         var f = vc.view.frame
         if vc === self.fromVC {
             f.origin.x = self.isPresenting ? self.fromVCScrollX : f.width
