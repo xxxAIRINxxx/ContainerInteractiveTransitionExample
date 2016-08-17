@@ -181,14 +181,16 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         self.completion?(didComplete)
     }
     
-    func viewController(forKey key: String) -> UIViewController? {
-        if key == UITransitionContextFromViewControllerKey { return self.fromVC }
-        if key == UITransitionContextToViewControllerKey { return self.toVC }
+    func viewController(forKey key: UITransitionContextViewControllerKey) -> UIViewController? {
+        if key == UITransitionContextViewControllerKey.from { return self.fromVC }
+        if key == UITransitionContextViewControllerKey.to { return self.toVC }
         return nil
     }
     
-    func view(forKey key: String) -> UIView? {
-        return self.viewController(forKey: key)?.view
+    func view(forKey key: UITransitionContextViewKey) -> UIView? {
+        if key == UITransitionContextViewKey.from { return self.fromVC.view }
+        if key == UITransitionContextViewKey.to { return self.toVC.view }
+        return nil
     }
     
     func initialFrame(for vc: UIViewController) -> CGRect {
