@@ -10,8 +10,8 @@ Examples of interactive transition of ContainerViewController. (UIPercentDrivenI
 
 ## Requirements
 
-* Xcode 8.0 (beta 4)
-* iOS 8.0+
+* Xcode 8.0 (beta 6)
+* iOS 9.0+
 * Swift 3.0+
 
 ## License
