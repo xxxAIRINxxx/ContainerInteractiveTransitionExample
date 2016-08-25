@@ -45,7 +45,7 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
     }
     
     @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
-        let window : UIWindow? = self.transitionContext.fromVC.view.window
+        let window = self.transitionContext.fromVC.view.window
         
         var location = recognizer.location(in: window)
         location = location.applying(recognizer.view!.transform.inverted())
@@ -53,23 +53,26 @@ final class InteractiveAnimator: UIPercentDrivenInteractiveTransition {
         velocity = velocity.applying(recognizer.view!.transform.inverted())
         
         let bounds = self.transitionContext.fromVC.view.bounds
-        let animationRatio: CGFloat = (location.x - self.panLocationStart) / bounds.width
-        if recognizer.state == .began {
+        
+        switch recognizer.state {
+        case .began:
             self.panLocationStart = location.x
-        } else if recognizer.state == .changed {
+        case .changed:
             if (location.x - self.panLocationStart) > self.panStartThreshold && !self.transitionContext.nowInteractive {
                 self.startInteractiveTransition(self.transitionContext)
+                self.panLocationStart = location.x
             }
-            self.update(animationRatio)
-        } else if recognizer.state == .ended {
-            let velocityForSelectedDirection: CGFloat = velocity.x
-            
-            if velocityForSelectedDirection > self.panCompletionThreshold {
+            if self.transitionContext.nowInteractive {
+                let animationRatio = (location.x - self.panLocationStart) / bounds.width
+                self.update(animationRatio)
+            }
+        case .ended:
+            if velocity.x > 0.0 && (location.x - self.panLocationStart) > self.panCompletionThreshold {
                 self.finish()
             } else {
                 self.cancel()
             }
-        } else {
+        default:
             self.cancel()
         }
     }

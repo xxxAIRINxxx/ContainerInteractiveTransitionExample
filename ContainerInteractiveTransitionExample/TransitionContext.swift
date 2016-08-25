@@ -100,11 +100,14 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
     }
     
     func animateTransition(duration: TimeInterval, animations: ((Void) -> Void), completion: ((Bool) -> Void)? = nil) {
+        UIApplication.shared.beginIgnoringInteractionEvents()
         UIView.animate(withDuration: duration,
                        delay: 0.0,
                        options: .curveEaseOut,
-                       animations: animations,
-                       completion: completion)
+                       animations: animations) { finished in
+                        UIApplication.shared.endIgnoringInteractionEvents()
+                        completion?(finished)
+        }
     }
     
     func updateInteractiveTransition(_ percentComplete: CGFloat) {
@@ -147,11 +150,9 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         let d = self.duration - (self.duration * Double.init(self.percentComplete))
         self.nowInteractive = false
         
-        UIApplication.shared.beginIgnoringInteractionEvents()
         self.animateTransition(duration: d, animations: {
             self.updateInteractiveTransition(1.0)
         }) { finished in
-            UIApplication.shared.endIgnoringInteractionEvents()
             self.completeTransition(true)
         }
     }
@@ -160,11 +161,9 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         let d = self.duration * Double.init(1.0 - self.percentComplete)
         self.nowInteractive = false
         
-        UIApplication.shared.beginIgnoringInteractionEvents()
         self.animateTransition(duration: d, animations: {
             self.updateInteractiveTransition(0.0)
         }) { finished in
-            UIApplication.shared.endIgnoringInteractionEvents()
             self.completeTransition(false)
         }
     }
