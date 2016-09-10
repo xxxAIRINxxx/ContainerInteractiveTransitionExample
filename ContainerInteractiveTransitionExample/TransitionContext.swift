@@ -99,7 +99,7 @@ final class TransitionContext: NSObject, UIViewControllerContextTransitioning {
         }
     }
     
-    func animateTransition(duration: TimeInterval, animations: ((Void) -> Void), completion: ((Bool) -> Void)? = nil) {
+    func animateTransition(duration: TimeInterval, animations: @escaping ((Void) -> Void), completion: ((Bool) -> Void)? = nil) {
         UIApplication.shared.beginIgnoringInteractionEvents()
         UIView.animate(withDuration: duration,
                        delay: 0.0,
